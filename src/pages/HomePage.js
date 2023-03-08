@@ -59,11 +59,13 @@ const HomePage = () => {
         ))}
       </div>
       <Row>
-        {itemData.filter((i) => i.category === selectedCategory).map((item) => (
-          <Col xs={24} lg={16} md={12} sm={6}>
-            <ItemList item={item} />
-          </Col>
-        ))}
+        {itemData
+          .filter((i) => i.category === selectedCategory)
+          .map((item) => (
+            <Col xs={24} lg={16} md={12} sm={6}>
+              <ItemList item={item} key={item.id} />
+            </Col>
+          ))}
       </Row>
     </DefaultLayout>
   );

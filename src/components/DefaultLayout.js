@@ -30,7 +30,7 @@ const DefaultLayout = ({ children }) => {
 
   return (
     <Layout>
-    {loading && <Spinner/>}
+      {loading && <Spinner />}
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h1 className="text-center text-light font-wight-bold mt-4">POS</h1>
@@ -52,7 +52,14 @@ const DefaultLayout = ({ children }) => {
           <Menu.Item key="/customers" icon={<UserOutlined />}>
             <Link to="/customers">Cutomers</Link>
           </Menu.Item>
-          <Menu.Item key="/logout" icon={<LogoutOutlined />}>
+          <Menu.Item
+            key="/logout"
+            icon={<LogoutOutlined />}
+            onClick={() => {
+              localStorage.removeItem('auth');
+              navigate('/login');
+            }}
+          >
             Logout
           </Menu.Item>
         </Menu>

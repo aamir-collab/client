@@ -21,7 +21,7 @@ const ItemList = ({ item }) => {
       >
         <Meta title={item.name} />
         <div className="item-button">
-          <Button onClick={() => handleAddToCart}>Add to Cart</Button>
+          <Button onClick={() => handleAddToCart()}>Add to Cart</Button>
         </div>
       </Card>
     </div>

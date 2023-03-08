@@ -20,10 +20,11 @@ const ItemPage = () => {
       setItemData(data);
       dispatch({ type: 'HIDE_LOADING' });
     } catch (error) {
+      dispatch({ type: 'HIDE_LOADING' });
       console.log(error);
     }
   };
-  getAllItems();
+  // getAllItems();
   //useEffect
   useEffect(() => {
     getAllItems();
@@ -34,7 +35,7 @@ const ItemPage = () => {
   const handleDelete = async (record) => {
     try {
       dispatch({
-        type: 'SHOW_LOADING',
+        type: 'LOADING',
       });
       await axios.post('/api/items/delete-item', { itemId: record._id });
       message.success('Item Deleted Succesfully');
@@ -81,22 +82,41 @@ const ItemPage = () => {
     },
   ];
   const handleSubmit = async (value) => {
-    try {
-      dispatch({
-        type: 'LOADING',
-      });
-      const res = await axios.post('/api/items/get-item');
-      message.success('Item added succesfully');
-      getAllItems();
-      setPopModal(false);
-      dispatch({ type: 'HIDE_LOADING' });
-    } catch (error) {
-      dispatch({ type: 'HIDE_LOADING' });
-      message.error('something went wrong');
-      console.log(error);
+    if (editItem === null) {
+      try {
+        dispatch({
+          type: 'LOADING',
+        });
+        const res = await axios.post('/api/items/add-item', value);
+        message.success('Item Added Succesfully');
+        getAllItems();
+        setPopModal(false);
+        dispatch({ type: 'HIDE_LOADING' });
+      } catch (error) {
+        dispatch({ type: 'HIDE_LOADING' });
+        message.error('Something Went Wrong');
+        console.log(error);
+      }
+    } else {
+      try {
+        dispatch({
+          type: 'LOADING',
+        });
+        await axios.put('/api/items/edit-item', {
+          ...value,
+          itemId: editItem._id,
+        });
+        message.success('Item Updated Succesfully');
+        getAllItems();
+        setPopModal(false);
+        dispatch({ type: 'HIDE_LOADING' });
+      } catch (error) {
+        dispatch({ type: 'HIDE_LOADING' });
+        message.error('Something Went Wrong');
+        console.log(error);
+      }
     }
   };
-
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
@@ -109,12 +129,19 @@ const ItemPage = () => {
 
       {popModal && (
         <Modal
-          title="Basic Modal"
-          open={popModal}
-          onCancel={() => setPopModal(false)}
+          title={`${editItem !== null ? 'Edit Item ' : 'Add New Item'}`}
+          visible={popModal}
+          onCancel={() => {
+            setEditItem(null);
+            setPopModal(false);
+          }}
           footer={false}
         >
-          <Form layout="vertical" onFinish={handleSubmit}>
+          <Form
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={editItem}
+          >
             <Form.Item name="name" label="Name">
               <Input />
             </Form.Item>
